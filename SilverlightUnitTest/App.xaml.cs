@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+using Microsoft.Silverlight.Testing;
 
 namespace SilverlightUnitTest
 {
@@ -26,7 +18,7 @@ namespace SilverlightUnitTest
 
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
-			this.RootVisual = new MainPage();
+			this.RootVisual = UnitTestSystem.CreateTestPage();
 		}
 
 		private void Application_Exit(object sender, EventArgs e)
