@@ -30,15 +30,30 @@ namespace SilverlightUnitTest
 			return (T)func.DynamicInvoke(instance);
 		}
 
+		public static T CallMethod<T>(MethodInfo methodInfo, object instance, params object[] parameters)
+		{
+			string fullName = $"{methodInfo.DeclaringType.FullName}.{methodInfo.Name}";
+			Delegate func = funcs.TryGetValue(fullName, out func) ? func : (funcs[fullName] = GetDelegate(methodInfo));
+			return (T)func.DynamicInvoke(new object[] { instance }.Concat(parameters).ToArray());
+		}
+
 		private static Delegate GetDelegate(MemberInfo memberInfo)
 		{
-			var paramExp = Expression.Parameter(typeof(object));
+			var paramExp = Expression.Parameter(typeof(object), "item");
 			var exp = Expression.Convert(paramExp, memberInfo.DeclaringType);
 			Expression accessor = null;
+			IEnumerable<ParameterExpression> parameters = Enumerable.Empty<ParameterExpression>();
 			switch (memberInfo.MemberType)
 			{
 				case MemberTypes.Method:
-					accessor = Expression.Call(exp, (MethodInfo)memberInfo);
+					var methodInfo = (MethodInfo)memberInfo;
+					var pp = methodInfo.GetParameters();
+					parameters = Enumerable.Range(1, pp.Length)
+						.Select(i => Expression.Parameter(typeof(object), $"item{i}")).ToList();
+					var methodParameter = pp.Zip(
+						parameters,
+						(mp, dp) => Expression.Convert(dp, mp.ParameterType)).ToList();
+					accessor = Expression.Call(exp, methodInfo, methodParameter);
 					break;
 
 				case MemberTypes.Property:
@@ -47,7 +62,7 @@ namespace SilverlightUnitTest
 					break;
 			}
 
-			var t = Expression.Lambda(accessor, paramExp).Compile();
+			var t = Expression.Lambda(accessor, new[] { paramExp }.Concat(parameters)).Compile();
 			return t;
 		}
 	}

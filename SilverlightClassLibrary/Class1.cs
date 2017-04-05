@@ -6,5 +6,10 @@
 		{
 			return "hoge";
 		}
+
+		private string GetTests(string item1, bool item2)
+		{
+			return item1 + item2;
+		}
 	}
 }

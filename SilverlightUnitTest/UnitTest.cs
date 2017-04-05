@@ -42,5 +42,13 @@ namespace SilverlightUnitTest
 			var result = Publicer.GetMember<string>(obj.GetType().GetMember("GetTest", (BindingFlags)int.MaxValue).First(), obj);
 			Assert.AreEqual("hoge", result);
 		}
+
+		[TestMethod]
+		public void Test5()
+		{
+			var obj = new Class1();
+			var result = Publicer.CallMethod<string>(obj.GetType().GetMethod("GetTests", (BindingFlags)int.MaxValue), obj, "hoge", true);
+			Assert.AreEqual("hogeTrue", result);
+		}
 	}
 }
