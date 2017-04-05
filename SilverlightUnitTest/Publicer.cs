@@ -25,25 +25,31 @@ namespace SilverlightUnitTest
 			if (!funcs.TryGetValue(fullName, out func))
 			{
 				var memberInfo = type.GetMember(memberName, AllFlags).First();
-				var paramExp = Expression.Parameter(typeof(object));
-				var exp = Expression.Convert(paramExp, type);
-				Expression accessor = null;
-				switch (memberInfo.MemberType)
-				{
-					case MemberTypes.Method:
-						accessor = Expression.Call(exp, (MethodInfo)memberInfo);
-						break;
-
-					case MemberTypes.Property:
-					case MemberTypes.Field:
-						accessor = Expression.PropertyOrField(exp, memberName);
-						break;
-				}
-
-				func = funcs[fullName] = Expression.Lambda(accessor, paramExp).Compile();
+				func = funcs[fullName] = GetDelegate(memberInfo);
 			}
 
 			return (T)func.DynamicInvoke(instance);
+		}
+
+		private static Delegate GetDelegate(MemberInfo memberInfo)
+		{
+			var paramExp = Expression.Parameter(typeof(object));
+			var exp = Expression.Convert(paramExp, memberInfo.DeclaringType);
+			Expression accessor = null;
+			switch (memberInfo.MemberType)
+			{
+				case MemberTypes.Method:
+					accessor = Expression.Call(exp, (MethodInfo)memberInfo);
+					break;
+
+				case MemberTypes.Property:
+				case MemberTypes.Field:
+					accessor = Expression.PropertyOrField(exp, memberInfo.Name);
+					break;
+			}
+
+			var t = Expression.Lambda(accessor, paramExp).Compile();
+			return t;
 		}
 	}
 }
