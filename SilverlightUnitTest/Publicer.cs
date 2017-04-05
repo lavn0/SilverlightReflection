@@ -20,9 +20,7 @@ namespace SilverlightUnitTest
 		private readonly static Dictionary<string, Delegate> funcs = new Dictionary<string, Delegate>();
 		public static T GetMember<T>(Type type, string memberName, object instance)
 		{
-			string fullName = $"{type.FullName}.{memberName}";
-			Delegate func = funcs.TryGetValue(fullName, out func) ? func : (funcs[fullName] = GetDelegate(type.GetMember(memberName, AllFlags).First()));
-			return (T)func.DynamicInvoke(instance);
+			return GetMember<T>(type.GetMember(memberName, AllFlags).First(), instance);
 		}
 
 		public static T GetMember<T>(MemberInfo memberInfo, object instance)
