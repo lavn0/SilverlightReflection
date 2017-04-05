@@ -23,5 +23,13 @@ namespace SilverlightUnitTest
 			var result = methodInfo.Invoke(obj, null);
 			Assert.AreEqual("hoge", result);
 		}
+
+		[TestMethod]
+		public void Test3()
+		{
+			var obj = new Class1();
+			var result = Publicer.GetMember<string>(obj.GetType(), "GetTest", obj);
+			Assert.AreEqual("hoge", result);
+		}
 	}
 }
