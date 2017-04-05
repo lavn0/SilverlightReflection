@@ -62,8 +62,7 @@ namespace SilverlightUnitTest
 					break;
 			}
 
-			var t = Expression.Lambda(accessor, new[] { paramExp }.Concat(parameters)).Compile();
-			return t;
+			return Expression.Lambda(accessor, new[] { paramExp }.Concat(parameters)).Compile();
 		}
 	}
 }
