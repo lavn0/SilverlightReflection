@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SilverlightClassLibrary;
 
@@ -16,6 +17,7 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(MethodAccessException))]
 		public void Test2()
 		{
 			var obj = new Class1();
