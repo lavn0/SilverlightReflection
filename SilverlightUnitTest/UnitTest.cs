@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SilverlightClassLibrary;
@@ -31,6 +32,14 @@ namespace SilverlightUnitTest
 		{
 			var obj = new Class1();
 			var result = Publicer.GetMember<string>(obj.GetType(), "GetTest", obj);
+			Assert.AreEqual("hoge", result);
+		}
+
+		[TestMethod]
+		public void Test4()
+		{
+			var obj = new Class1();
+			var result = Publicer.GetMember<string>(obj.GetType().GetMember("GetTest", (BindingFlags)int.MaxValue).First(), obj);
 			Assert.AreEqual("hoge", result);
 		}
 	}

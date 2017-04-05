@@ -31,6 +31,18 @@ namespace SilverlightUnitTest
 			return (T)func.DynamicInvoke(instance);
 		}
 
+		public static T GetMember<T>(MemberInfo memberInfo, object instance)
+		{
+			string fullName = $"{memberInfo.DeclaringType.FullName}.{memberInfo.Name}";
+			Delegate func;
+			if (!funcs.TryGetValue(fullName, out func))
+			{
+				func = funcs[fullName] = GetDelegate(memberInfo);
+			}
+
+			return (T)func.DynamicInvoke(instance);
+		}
+
 		private static Delegate GetDelegate(MemberInfo memberInfo)
 		{
 			var paramExp = Expression.Parameter(typeof(object));
