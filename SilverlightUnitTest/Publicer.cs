@@ -20,20 +20,23 @@ namespace SilverlightUnitTest
 		private readonly static Dictionary<string, Delegate> funcs = new Dictionary<string, Delegate>();
 		public static T GetMember<T>(Type type, string memberName, object instance)
 		{
-			return GetMember<T>(type.GetMember(memberName, AllFlags).First(), instance);
+			return GetMemberCore<T>(type.GetMember(memberName, AllFlags).First(), instance);
 		}
 
 		public static T GetMember<T>(MemberInfo memberInfo, object instance)
 		{
-			string fullName = $"{memberInfo.DeclaringType.FullName}.{memberInfo.Name}";
-			Delegate func = funcs.TryGetValue(fullName, out func) ? func : (funcs[fullName] = GetDelegate(memberInfo));
-			return (T)func.DynamicInvoke(instance);
+			return GetMemberCore<T>(memberInfo, instance);
 		}
 
 		public static T CallMethod<T>(MethodInfo methodInfo, object instance, params object[] parameters)
 		{
-			string fullName = $"{methodInfo.DeclaringType.FullName}.{methodInfo.Name}";
-			Delegate func = funcs.TryGetValue(fullName, out func) ? func : (funcs[fullName] = GetDelegate(methodInfo));
+			return GetMemberCore<T>(methodInfo, instance, parameters);
+		}
+
+		private static T GetMemberCore<T>(MemberInfo memberInfo, object instance, params object[] parameters)
+		{
+			string fullName = $"{memberInfo.DeclaringType.FullName}.{memberInfo.Name}";
+			Delegate func = funcs.TryGetValue(fullName, out func) ? func : (funcs[fullName] = GetDelegate(memberInfo));
 			return (T)func.DynamicInvoke(new object[] { instance }.Concat(parameters).ToArray());
 		}
 
