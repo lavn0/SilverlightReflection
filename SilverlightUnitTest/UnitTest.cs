@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SilverlightClassLibrary;
@@ -7,7 +6,7 @@ using SilverlightClassLibrary;
 namespace SilverlightUnitTest
 {
 	[TestClass]
-	public class UnitTest
+	public class UnitTest1
 	{
 		[TestInitialize]
 		public void TestInitialize()
@@ -16,44 +15,26 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
-		public void InstantPublicerTest()
-		{
-			var obj = new Class1();
-			var result = InstantPublicer.CallMethod<string>(obj, obj.GetType(), "GetTest");
-			Assert.AreEqual("hoge", result);
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(MethodAccessException))]
-		public void MethodAccessErrorTest()
-		{
-			var obj = new Class1();
-			var methodInfo = typeof(Class1).GetMethod("GetTest", (BindingFlags)int.MaxValue);
-			var result = methodInfo.Invoke(obj, null);
-			Assert.AreEqual("hoge", result);
-		}
-
-		[TestMethod]
 		public void GetMemberTestStr()
 		{
 			var obj = new Class1();
-			var result = Publicer.GetMember<string>(obj.GetType(), "GetTest", obj);
-			Assert.AreEqual("hoge", result);
+			var result = Publicer.GetMember<int>(obj.GetType(), "GetMethod", obj);
+			Assert.AreEqual(1, result);
 		}
 
 		[TestMethod]
 		public void GetMemberTestInfo()
 		{
 			var obj = new Class1();
-			var result = Publicer.GetMember<string>(obj.GetType().GetMember("GetTest", (BindingFlags)int.MaxValue).First(), obj);
-			Assert.AreEqual("hoge", result);
+			var result = Publicer.GetMember<int>(obj.GetType().GetMember("GetMethod", (BindingFlags)int.MaxValue).First(), obj);
+			Assert.AreEqual(1, result);
 		}
 
 		[TestMethod]
 		public void GetMethodTestStr()
 		{
 			var obj = new Class1();
-			var result = Publicer.CallMethod<string>(typeof(Class1), "GetTests", obj, "hoge", true);
+			var result = Publicer.CallMethod<string>(typeof(Class1), "GetMethodWithParams", obj, "hoge", true);
 			Assert.AreEqual("hogeTrue", result);
 		}
 
@@ -61,7 +42,7 @@ namespace SilverlightUnitTest
 		public void GetMethodTestInfo()
 		{
 			var obj = new Class1();
-			var result = Publicer.CallMethod<string>(obj.GetType().GetMethod("GetTests", (BindingFlags)int.MaxValue), obj, "hoge", true);
+			var result = Publicer.CallMethod<string>(obj.GetType().GetMethod("GetMethodWithParams", (BindingFlags)int.MaxValue), obj, "hoge", true);
 			Assert.AreEqual("hogeTrue", result);
 		}
 	}
