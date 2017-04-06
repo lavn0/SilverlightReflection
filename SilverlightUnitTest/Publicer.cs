@@ -17,55 +17,64 @@ namespace SilverlightUnitTest
 			return lambda.Compile().Invoke();
 		}
 
-		private readonly static Dictionary<string, Delegate> funcs = new Dictionary<string, Delegate>();
 		public static T GetMember<T>(Type type, string memberName, object instance)
 		{
-			return GetMemberCore<T>(type.GetMember(memberName, AllFlags).First(), instance);
+			return PublicerCore.GetMemberCore<T>(type.GetMember(memberName, AllFlags).First(), instance);
 		}
 
 		public static T GetMember<T>(MemberInfo memberInfo, object instance)
 		{
-			return GetMemberCore<T>(memberInfo, instance);
+			return PublicerCore.GetMemberCore<T>(memberInfo, instance);
 		}
 
 		public static T CallMethod<T>(MethodInfo methodInfo, object instance, params object[] parameters)
 		{
-			return GetMemberCore<T>(methodInfo, instance, parameters);
+			return PublicerCore.GetMemberCore<T>(methodInfo, instance, parameters);
 		}
 
-		private static T GetMemberCore<T>(MemberInfo memberInfo, object instance, params object[] parameters)
+		public static T GetProperty<T>(PropertyInfo propertyInfo, object instance)
 		{
-			string fullName = $"{memberInfo.DeclaringType.FullName}.{memberInfo.Name}";
-			Delegate func = funcs.TryGetValue(fullName, out func) ? func : (funcs[fullName] = GetDelegate(memberInfo));
-			return (T)func.DynamicInvoke(new object[] { instance }.Concat(parameters).ToArray());
+			return PublicerCore.GetMemberCore<T>(propertyInfo, instance);
 		}
 
-		private static Delegate GetDelegate(MemberInfo memberInfo)
+		private class PublicerCore
 		{
-			var paramExp = Expression.Parameter(typeof(object), "item");
-			var exp = Expression.Convert(paramExp, memberInfo.DeclaringType);
-			Expression accessor = null;
-			IEnumerable<ParameterExpression> parameters = Enumerable.Empty<ParameterExpression>();
-			switch (memberInfo.MemberType)
+			private readonly static Dictionary<string, Delegate> funcs = new Dictionary<string, Delegate>();
+
+			public static T GetMemberCore<T>(MemberInfo memberInfo, object instance, params object[] parameters)
 			{
-				case MemberTypes.Method:
-					var methodInfo = (MethodInfo)memberInfo;
-					var pp = methodInfo.GetParameters();
-					parameters = Enumerable.Range(1, pp.Length)
-						.Select(i => Expression.Parameter(typeof(object), $"item{i}")).ToList();
-					var methodParameter = pp.Zip(
-						parameters,
-						(mp, dp) => Expression.Convert(dp, mp.ParameterType)).ToList();
-					accessor = Expression.Call(exp, methodInfo, methodParameter);
-					break;
-
-				case MemberTypes.Property:
-				case MemberTypes.Field:
-					accessor = Expression.PropertyOrField(exp, memberInfo.Name);
-					break;
+				string fullName = $"{memberInfo.DeclaringType.FullName}.{memberInfo.Name}";
+				Delegate func = funcs.TryGetValue(fullName, out func) ? func : (funcs[fullName] = GetDelegate(memberInfo));
+				return (T)func.DynamicInvoke(new object[] { instance }.Concat(parameters).ToArray());
 			}
 
-			return Expression.Lambda(accessor, new[] { paramExp }.Concat(parameters)).Compile();
+			private static Delegate GetDelegate(MemberInfo memberInfo)
+			{
+				var paramExp = Expression.Parameter(typeof(object), "item");
+				var exp = Expression.Convert(paramExp, memberInfo.DeclaringType);
+				Expression accessor = null;
+				IEnumerable<ParameterExpression> parameters = Enumerable.Empty<ParameterExpression>();
+				switch (memberInfo.MemberType)
+				{
+					case MemberTypes.Method:
+						var methodInfo = (MethodInfo)memberInfo;
+						var pp = methodInfo.GetParameters();
+						parameters = Enumerable.Range(1, pp.Length)
+							.Select(i => Expression.Parameter(typeof(object), $"item{i}")).ToList();
+						var methodParameter = pp.Zip(
+							parameters,
+							(mp, dp) => Expression.Convert(dp, mp.ParameterType)).ToList();
+						accessor = Expression.Call(exp, methodInfo, methodParameter);
+						break;
+
+					case MemberTypes.Property:
+					case MemberTypes.Field:
+						accessor = Expression.PropertyOrField(exp, memberInfo.Name);
+						break;
+				}
+
+				return Expression.Lambda(accessor, new[] { paramExp }.Concat(parameters)).Compile();
+			}
 		}
 	}
 }
