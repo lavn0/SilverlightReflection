@@ -9,17 +9,23 @@ namespace SilverlightUnitTest
 	[TestClass]
 	public class UnitTest
 	{
+		[TestInitialize]
+		public void TestInitialize()
+		{
+			Publicer.Clear();
+		}
+
 		[TestMethod]
-		public void Test1()
+		public void InstantPublicerTest()
 		{
 			var obj = new Class1();
-			var result = Publicer.CallMethod<string>(obj, obj.GetType(), "GetTest");
+			var result = InstantPublicer.CallMethod<string>(obj, obj.GetType(), "GetTest");
 			Assert.AreEqual("hoge", result);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(MethodAccessException))]
-		public void Test2()
+		public void MethodAccessErrorTest()
 		{
 			var obj = new Class1();
 			var methodInfo = typeof(Class1).GetMethod("GetTest", (BindingFlags)int.MaxValue);
@@ -28,7 +34,7 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
-		public void Test3()
+		public void GetMemberTestStr()
 		{
 			var obj = new Class1();
 			var result = Publicer.GetMember<string>(obj.GetType(), "GetTest", obj);
@@ -36,7 +42,7 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
-		public void Test4()
+		public void GetMemberTestInfo()
 		{
 			var obj = new Class1();
 			var result = Publicer.GetMember<string>(obj.GetType().GetMember("GetTest", (BindingFlags)int.MaxValue).First(), obj);
@@ -44,7 +50,15 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
-		public void Test5()
+		public void GetMethodTestStr()
+		{
+			var obj = new Class1();
+			var result = Publicer.CallMethod<string>(typeof(Class1), "GetTests", obj, "hoge", true);
+			Assert.AreEqual("hogeTrue", result);
+		}
+
+		[TestMethod]
+		public void GetMethodTestInfo()
 		{
 			var obj = new Class1();
 			var result = Publicer.CallMethod<string>(obj.GetType().GetMethod("GetTests", (BindingFlags)int.MaxValue), obj, "hoge", true);

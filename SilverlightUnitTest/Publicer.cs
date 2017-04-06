@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace SilverlightUnitTest
 {
+	/// <summary>Silverlightのセキュリティを超えてprivate/internalメンバを呼び出すためのクラス</summary>
 	public static class Publicer
 	{
 		public static readonly BindingFlags AllFlags = (BindingFlags)int.MaxValue;
-
-		public static T CallMethod<T>(object instance, Type type, string methodName)
-		{
-			var methodInfo = type.GetMethod(methodName, AllFlags);
-			var lambda = Expression.Lambda<Func<T>>(Expression.Call(Expression.Constant(instance), methodInfo));
-			return lambda.Compile().Invoke();
-		}
 
 		public static T GetMember<T>(Type type, string memberName, object instance)
 		{
@@ -27,9 +22,19 @@ namespace SilverlightUnitTest
 			return PublicerCore.GetMemberCore<T>(memberInfo, instance);
 		}
 
+		public static T CallMethod<T>(Type type, string memberName, object instance, params object[] parameters)
+		{
+			return PublicerCore.GetMemberCore<T>(type.GetMember(memberName, AllFlags).First(), instance, parameters);
+		}
+
 		public static T CallMethod<T>(MethodInfo methodInfo, object instance, params object[] parameters)
 		{
 			return PublicerCore.GetMemberCore<T>(methodInfo, instance, parameters);
+		}
+
+		public static T GetProperty<T>(Type type, string memberName, object instance)
+		{
+			return PublicerCore.GetMemberCore<T>(type.GetProperty(memberName, AllFlags), instance);
 		}
 
 		public static T GetProperty<T>(PropertyInfo propertyInfo, object instance)
@@ -37,9 +42,21 @@ namespace SilverlightUnitTest
 			return PublicerCore.GetMemberCore<T>(propertyInfo, instance);
 		}
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void Clear()
+		{
+			PublicerCore.Clear();
+		}
+
 		private class PublicerCore
 		{
 			private readonly static Dictionary<string, Delegate> funcs = new Dictionary<string, Delegate>();
+
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public static void Clear()
+			{
+				funcs.Clear();
+			}
 
 			public static T GetMemberCore<T>(MemberInfo memberInfo, object instance, params object[] parameters)
 			{
