@@ -22,9 +22,10 @@ namespace SilverlightUnitTest
 			return PublicerCore.GetMemberCore<T>(type.GetProperty(memberName, AllFlags), instance);
 		}
 
-		public static T InvokeMethod<T>(Type type, string memberName, object instance, params object[] parameters)
+		public static T InvokeMethod<T>(Type type, string memberName, Type[] parameterTypes, object instance, params object[] parameters)
 		{
-			return PublicerCore.GetMemberCore<T>(type.GetMethod(memberName, AllFlags), instance, parameters);
+			var method = type.GetMethods(AllFlags).First(m => m.Name == memberName && m.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameterTypes));
+			return PublicerCore.GetMemberCore<T>(method, instance, parameters);
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]

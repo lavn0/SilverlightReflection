@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SilverlightClassLibrary;
 
 namespace SilverlightUnitTest
@@ -32,7 +33,7 @@ namespace SilverlightUnitTest
 		public void InvokeMethodTest1()
 		{
 			var obj = new NonStaticClass();
-			var result = Publicer.InvokeMethod<bool>(typeof(NonStaticClass), "Method1", obj);
+			var result = Publicer.InvokeMethod<bool>(typeof(NonStaticClass), "Method", new Type[0], obj);
 			Assert.AreEqual(true, result);
 		}
 
@@ -40,7 +41,7 @@ namespace SilverlightUnitTest
 		public void InvokeMethodTest2()
 		{
 			var obj = new NonStaticClass();
-			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "Method2", obj, 5);
+			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "Method", new[] { typeof(int) }, obj, 5);
 			Assert.AreEqual("05", result);
 		}
 
@@ -48,8 +49,8 @@ namespace SilverlightUnitTest
 		public void InvokeMethodTest3()
 		{
 			var obj = new NonStaticClass();
-			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "Method3", obj, "hoge", true);
+			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "Method", new[] { typeof(string), typeof(bool) }, obj, "hoge", true);
 			Assert.AreEqual("hogeTrue", result);
 		}
-	}
+}
 }
