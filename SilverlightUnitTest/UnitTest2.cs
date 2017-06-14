@@ -16,7 +16,7 @@ namespace SilverlightUnitTest
 		[TestMethod]
 		public void GetPropertyTestStr()
 		{
-			var obj = new Class1();
+			var obj = new NonStaticClass();
 			var result = Publicer.GetProperty<int>(obj.GetType(), "PropertyGet", obj);
 			Assert.AreEqual(3, result);
 		}
@@ -24,7 +24,7 @@ namespace SilverlightUnitTest
 		[TestMethod]
 		public void GetPropertyTestInfo()
 		{
-			var obj = new Class1();
+			var obj = new NonStaticClass();
 			var result = Publicer.GetProperty<int>(obj.GetType().GetProperty("PropertyGet", (BindingFlags)int.MaxValue), obj);
 			Assert.AreEqual(3, result);
 		}

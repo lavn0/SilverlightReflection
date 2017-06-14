@@ -18,8 +18,8 @@ namespace SilverlightUnitTest
 		[ExpectedException(typeof(MethodAccessException))]
 		public void MethodAccessErrorTest()
 		{
-			var obj = new Class1();
-			var methodInfo = typeof(Class1).GetMethod("GetMethod", (BindingFlags)int.MaxValue);
+			var obj = new NonStaticClass();
+			var methodInfo = typeof(NonStaticClass).GetMethod("GetMethod", (BindingFlags)int.MaxValue);
 			var result = methodInfo.Invoke(obj, null);
 			Assert.AreEqual(1, result);
 		}
@@ -27,7 +27,7 @@ namespace SilverlightUnitTest
 		[TestMethod]
 		public void InstantPublicerTest()
 		{
-			var obj = new Class1();
+			var obj = new NonStaticClass();
 			var result = InstantPublicer.CallMethod<int>(obj, obj.GetType(), "GetMethod");
 			Assert.AreEqual(1, result);
 		}

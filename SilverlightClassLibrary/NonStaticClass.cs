@@ -1,11 +1,8 @@
 ﻿namespace SilverlightClassLibrary
 {
-	public class Class1
+	public class NonStaticClass
 	{
-		private int PropertyGet { get { return 3; } }
-		private int propertySet;
-		private int PropertySet { set { propertySet = value; } }
-		private int PropertyGetSet { get; set; }
+		private int Property { get; set; }
 
 		private int GetMethod()
 		{
