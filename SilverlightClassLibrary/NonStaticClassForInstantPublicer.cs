@@ -1,6 +1,6 @@
 ﻿namespace SilverlightClassLibrary
 {
-	public class NonStaticClass
+	public class NonStaticClassForInstantPublicer
 	{
 		private string field = "field";
 		private string Property { get; set; } = "property";

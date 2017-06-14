@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SilverlightClassLibrary;
@@ -18,18 +19,18 @@ namespace SilverlightUnitTest
 		[ExpectedException(typeof(MethodAccessException))]
 		public void MethodAccessErrorTest()
 		{
-			var obj = new NonStaticClass();
-			var methodInfo = typeof(NonStaticClass).GetMethod("GetMethod", (BindingFlags)int.MaxValue);
+			var obj = new NonStaticClassForInstantPublicer();
+			var methodInfo = typeof(NonStaticClassForInstantPublicer).GetMethods((BindingFlags)int.MaxValue).First(m => m.Name == "Method1");
 			var result = methodInfo.Invoke(obj, null);
-			Assert.AreEqual(1, result);
+			Assert.AreEqual(true, result);
 		}
 
 		[TestMethod]
 		public void InstantPublicerTest()
 		{
-			var obj = new NonStaticClass();
-			var result = InstantPublicer.CallMethod<int>(obj, obj.GetType(), "GetMethod");
-			Assert.AreEqual(1, result);
+			var obj = new NonStaticClassForInstantPublicer();
+			var result = InstantPublicer.CallMethod<bool>(obj, obj.GetType(), "Method1");
+			Assert.AreEqual(true, result);
 		}
 	}
 }

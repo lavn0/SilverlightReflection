@@ -16,23 +16,39 @@ namespace SilverlightUnitTest
 		public void GetFieldTest()
 		{
 			var obj = new NonStaticClass();
-			var result = Publicer.GetField<int>(obj.GetType(), "GetMethod", obj);
-			Assert.AreEqual(1, result);
+			var result = Publicer.GetField<string>(obj.GetType(), "field", obj);
+			Assert.AreEqual("field", result);
 		}
 
 		[TestMethod]
 		public void GetPropertyTestStr()
 		{
 			var obj = new NonStaticClass();
-			var result = Publicer.GetProperty<int>(obj.GetType(), "PropertyGet", obj);
-			Assert.AreEqual(3, result);
+			var result = Publicer.GetProperty<string>(obj.GetType(), "Property", obj);
+			Assert.AreEqual("property", result);
 		}
 
 		[TestMethod]
-		public void InvokeMethodTest()
+		public void InvokeMethodTest1()
 		{
 			var obj = new NonStaticClass();
-			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "GetMethodWithParams", obj, "hoge", true);
+			var result = Publicer.InvokeMethod<bool>(typeof(NonStaticClass), "Method1", obj);
+			Assert.AreEqual(true, result);
+		}
+
+		[TestMethod]
+		public void InvokeMethodTest2()
+		{
+			var obj = new NonStaticClass();
+			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "Method2", obj, 5);
+			Assert.AreEqual("05", result);
+		}
+
+		[TestMethod]
+		public void InvokeMethodTest3()
+		{
+			var obj = new NonStaticClass();
+			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "Method3", obj, "hoge", true);
 			Assert.AreEqual("hogeTrue", result);
 		}
 	}
