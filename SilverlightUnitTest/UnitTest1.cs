@@ -13,7 +13,7 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
-		public void GetMemberTestStr()
+		public void GetFieldTest()
 		{
 			var obj = new NonStaticClass();
 			var result = Publicer.GetField<int>(obj.GetType(), "GetMethod", obj);
@@ -21,7 +21,15 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
-		public void GetMethodTestStr()
+		public void GetPropertyTestStr()
+		{
+			var obj = new NonStaticClass();
+			var result = Publicer.GetProperty<int>(obj.GetType(), "PropertyGet", obj);
+			Assert.AreEqual(3, result);
+		}
+
+		[TestMethod]
+		public void InvokeMethodTest()
 		{
 			var obj = new NonStaticClass();
 			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "GetMethodWithParams", obj, "hoge", true);

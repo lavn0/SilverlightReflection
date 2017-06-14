@@ -17,14 +17,14 @@ namespace SilverlightUnitTest
 			return PublicerCore.GetMemberCore<T>(type.GetField(memberName, AllFlags), instance);
 		}
 
-		public static T InvokeMethod<T>(Type type, string memberName, object instance, params object[] parameters)
-		{
-			return PublicerCore.GetMemberCore<T>(type.GetMethod(memberName, AllFlags), instance, parameters);
-		}
-
 		public static T GetProperty<T>(Type type, string memberName, object instance)
 		{
 			return PublicerCore.GetMemberCore<T>(type.GetProperty(memberName, AllFlags), instance);
+		}
+
+		public static T InvokeMethod<T>(Type type, string memberName, object instance, params object[] parameters)
+		{
+			return PublicerCore.GetMemberCore<T>(type.GetMethod(memberName, AllFlags), instance, parameters);
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
