@@ -12,34 +12,19 @@ namespace SilverlightUnitTest
 	{
 		public static readonly BindingFlags AllFlags = (BindingFlags)int.MaxValue;
 
-		public static T GetMember<T>(Type type, string memberName, object instance)
+		public static T GetField<T>(Type type, string memberName, object instance)
 		{
-			return PublicerCore.GetMemberCore<T>(type.GetMember(memberName, AllFlags).First(), instance);
+			return PublicerCore.GetMemberCore<T>(type.GetField(memberName, AllFlags), instance);
 		}
 
-		public static T GetMember<T>(MemberInfo memberInfo, object instance)
+		public static T InvokeMethod<T>(Type type, string memberName, object instance, params object[] parameters)
 		{
-			return PublicerCore.GetMemberCore<T>(memberInfo, instance);
-		}
-
-		public static T CallMethod<T>(Type type, string memberName, object instance, params object[] parameters)
-		{
-			return PublicerCore.GetMemberCore<T>(type.GetMember(memberName, AllFlags).First(), instance, parameters);
-		}
-
-		public static T CallMethod<T>(MethodInfo methodInfo, object instance, params object[] parameters)
-		{
-			return PublicerCore.GetMemberCore<T>(methodInfo, instance, parameters);
+			return PublicerCore.GetMemberCore<T>(type.GetMethod(memberName, AllFlags), instance, parameters);
 		}
 
 		public static T GetProperty<T>(Type type, string memberName, object instance)
 		{
 			return PublicerCore.GetMemberCore<T>(type.GetProperty(memberName, AllFlags), instance);
-		}
-
-		public static T GetProperty<T>(PropertyInfo propertyInfo, object instance)
-		{
-			return PublicerCore.GetMemberCore<T>(propertyInfo, instance);
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]

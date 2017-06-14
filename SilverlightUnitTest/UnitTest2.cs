@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SilverlightClassLibrary;
 
 namespace SilverlightUnitTest
@@ -18,14 +17,6 @@ namespace SilverlightUnitTest
 		{
 			var obj = new NonStaticClass();
 			var result = Publicer.GetProperty<int>(obj.GetType(), "PropertyGet", obj);
-			Assert.AreEqual(3, result);
-		}
-
-		[TestMethod]
-		public void GetPropertyTestInfo()
-		{
-			var obj = new NonStaticClass();
-			var result = Publicer.GetProperty<int>(obj.GetType().GetProperty("PropertyGet", (BindingFlags)int.MaxValue), obj);
 			Assert.AreEqual(3, result);
 		}
 	}
