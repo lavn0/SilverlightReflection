@@ -64,8 +64,8 @@ namespace SilverlightUnitTest
 			{
 				case MemberTypes.Field:
 					var fieldInfo = (FieldInfo)memberInfo;
-					objExp = fieldInfo.IsStatic ? null : Expression.Convert(paramExp, memberInfo.DeclaringType);
-					var fieldExp = Expression.PropertyOrField(objExp, memberInfo.Name);
+					objExp = fieldInfo.IsStatic ? null : Expression.Convert(paramExp, fieldInfo.DeclaringType);
+					var fieldExp = Expression.Field(objExp, fieldInfo);
 					var paramExp1 = Expression.Parameter(typeof(object), "item1");
 					var param1 = Expression.Convert(paramExp1, typeof(bool));
 					var paramExp2 = Expression.Parameter(typeof(object), "item2");
