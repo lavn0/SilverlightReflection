@@ -22,11 +22,29 @@ namespace SilverlightUnitTest
 		}
 
 		[TestMethod]
-		public void GetPropertyTestStr()
+		public void SetFieldTest()
+		{
+			var obj = new NonStaticClass();
+			Publicer.SetField(obj.GetType(), "field", obj, "field set value");
+			var result = Publicer.GetField<string>(obj.GetType(), "field", obj);
+			Assert.AreEqual("field set value", result);
+		}
+
+		[TestMethod]
+		public void GetPropertyTest()
 		{
 			var obj = new NonStaticClass();
 			var result = Publicer.GetProperty<string>(obj.GetType(), "Property", obj);
 			Assert.AreEqual("property", result);
+		}
+
+		[TestMethod]
+		public void SetPropertyTest()
+		{
+			var obj = new NonStaticClass();
+			Publicer.SetProperty(obj.GetType(), "Property", obj, "property set value");
+			var result = Publicer.GetProperty<string>(obj.GetType(), "Property", obj);
+			Assert.AreEqual("property set value", result);
 		}
 
 		[TestMethod]
@@ -52,5 +70,5 @@ namespace SilverlightUnitTest
 			var result = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "Method", new[] { typeof(string), typeof(bool) }, obj, "hoge", true);
 			Assert.AreEqual("hogeTrue", result);
 		}
-}
+	}
 }
