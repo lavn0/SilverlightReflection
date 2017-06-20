@@ -144,5 +144,78 @@ namespace SilverlightUnitTest
 			var result3 = Publicer.InvokeMethod<string>(typeof(NonStaticClass), "StaticMethod", new[] { typeof(string), typeof(bool) }, null, "hoge", true);
 			Assert.AreEqual("static hogeTrue", result3);
 		}
+
+		[TestMethod]
+		[Description("イベントハンドラの実装の基本テスト")]
+		public void HandlerTest1()
+		{
+			var obj = new NonStaticClass();
+			string str = "1st";
+			obj.SetEvent((sender, args) => { str += "2nd"; });
+			obj.CallEvent();
+			Assert.AreEqual("1st2nd", str);
+		}
+
+		[TestMethod]
+		[Description("イベントハンドラを取得するテスト")]
+		public void HandlerTest2()
+		{
+			var obj = new NonStaticClass();
+			string str = "1st";
+			obj.SetEvent((sender, args) => { str += "2nd"; });
+			var handler = Publicer.GetField<EventHandler<EventArgs>>(typeof(NonStaticClass), "handler", obj);
+			handler.Invoke(null, EventArgs.Empty);
+			Assert.AreEqual("1st2nd", str);
+		}
+
+		[TestMethod]
+		[Description("イベントハンドラの最後に追加するテスト")]
+		public void HandlerTest3()
+		{
+			var obj = new NonStaticClass();
+			string str = "1st";
+			var handler = Publicer.GetField<EventHandler<EventArgs>>(typeof(NonStaticClass), "handler", obj);
+			handler += ((sender, args) => { str += "2nd"; });
+			handler.Invoke(null, EventArgs.Empty);
+			Assert.AreEqual("1st2nd", str);
+		}
+
+		[TestMethod]
+		[Description("イベントハンドラにnullを設定するテスト")]
+		public void HandlerTest4()
+		{
+			var obj = new NonStaticClass();
+			string str = "1st";
+			obj.SetEvent((sender, args) => { str += "2nd"; });
+			Publicer.SetField(typeof(NonStaticClass), "handler", obj, null);
+			obj.CallEvent();
+			Assert.AreEqual("1st", str);
+		}
+
+		[TestMethod]
+		[Description("イベントハンドラの末尾に追加するテスト")]
+		public void HandlerTest5()
+		{
+			var obj = new NonStaticClass();
+			string str = "1st";
+			Publicer.SetField(typeof(NonStaticClass), "handler", obj, (EventHandler<EventArgs>)((sender, args) => { str += "2nd"; }));
+			obj.CallEvent();
+			Assert.AreEqual("1st2nd", str);
+		}
+
+		[TestMethod]
+		[Description("イベントハンドラの先頭に挿入するテスト")]
+		public void HandlerTest6()
+		{
+			var obj = new NonStaticClass();
+			string str = "1st";
+			obj.SetEvent((sender, args) => { str += "3rd"; });
+			var presentHandler = Publicer.GetField<EventHandler<EventArgs>>(typeof(NonStaticClass), "handler", obj);
+			var handler = (EventHandler<EventArgs>)((sender, args) => { str += "2nd"; });
+			handler += presentHandler;
+			Publicer.SetField(typeof(NonStaticClass), "handler", obj, handler);
+			obj.CallEvent();
+			Assert.AreEqual("1st2nd3rd", str);
+		}
 	}
 }

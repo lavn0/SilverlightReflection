@@ -1,4 +1,6 @@
-﻿namespace SilverlightClassLibrary
+﻿using System;
+
+namespace SilverlightClassLibrary
 {
 	public class NonStaticClass
 	{
@@ -7,6 +9,18 @@
 
 		private string field = "field";
 		private string Property { get; set; } = "property";
+
+		private EventHandler<EventArgs> handler;
+
+		public void CallEvent()
+		{
+			handler?.Invoke(null, EventArgs.Empty);
+		}
+
+		public void SetEvent(EventHandler<EventArgs> handler)
+		{
+			this.handler += handler;
+		}
 
 		private static bool StaticMethod()
 		{
