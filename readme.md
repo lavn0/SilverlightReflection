@@ -1,14 +1,14 @@
 # SilverlightReflection
-Silverlight‚Åprivate/internalƒƒ“ƒo‚ÉƒAƒNƒZƒX‚·‚éƒTƒ“ƒvƒ‹À‘•
+Silverlightã§private/internalãƒ¡ãƒ³ãƒã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ã‚µãƒ³ãƒ—ãƒ«å®Ÿè£…
 
-Publicer.cs‚ÌÀ‘•‚ğSilverlight‚ÌƒvƒƒWƒFƒNƒg‚É‘g‚İ‚İ‚Ü‚·B
+Publicer.csã®å®Ÿè£…ã‚’Silverlightã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã«çµ„ã¿è¾¼ã¿ã¾ã™ã€‚
 
-## g‚¢•û
+## ä½¿ã„æ–¹
 
-1. ƒNƒ‰ƒX‚ÌHogeƒƒ\ƒbƒh‚ğŒÄ‚Ño‚·
+1. ã‚¯ãƒ©ã‚¹ã®Hogeãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã™
 ```csharp
 var obj = new Class1();
-var result = Publicer.GetMember<string>(obj.GetType(), "GetTest", obj);
+var result = Publicer.GetMember<string>(typeof(Class1), "Hoge", obj);
 ```
 
 2. 
